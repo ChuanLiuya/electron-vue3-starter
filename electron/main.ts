@@ -11,7 +11,6 @@ function createWindow() {
     title: 'Electron Vue3 Starter',
     webPreferences: {
       preload: join(import.meta.dirname, 'preload.mjs'),
-      sandbox: false,
     },
   })
 
@@ -29,7 +28,7 @@ function createWindow() {
       }
     })
     mainWindow.loadURL(devServerUrl)
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
   } else {
     // 生产模式：加载构建产物
     mainWindow.loadFile(join(import.meta.dirname, '../dist/index.html'))
