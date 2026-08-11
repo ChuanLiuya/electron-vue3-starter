@@ -1,5 +1,6 @@
 import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'node:path'
+import { isDev, devServerUrl } from './env'
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -19,8 +20,15 @@ function createWindow() {
   })
 
   // 开发模式：加载 Vite 开发服务器（支持 HMR）
-  if (process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
+  if (isDev && devServerUrl) {
+    // 仅开发环境注册 F12 快捷键，生产环境无法打开开发者工具
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+      if (input.type === 'keyDown' && input.key === 'F12') {
+        mainWindow.webContents.toggleDevTools()
+        event.preventDefault()
+      }
+    })
+    mainWindow.loadURL(devServerUrl)
     mainWindow.webContents.openDevTools()
   } else {
     // 生产模式：加载构建产物
