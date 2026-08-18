@@ -1,6 +1,8 @@
 import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'node:path'
-import { isDev, devServerUrl } from './env'
+import { env } from './env'
+
+const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -9,8 +11,9 @@ function createWindow() {
     show: false,
     autoHideMenuBar: true,
     title: 'Electron Vue3 Starter',
+    icon: join(publicDir, 'favicon.ico'),
     webPreferences: {
-      preload: join(import.meta.dirname, 'preload.mjs'),
+      preload: join(electronRootDir, 'preload.mjs'),
     },
   })
 
@@ -31,7 +34,7 @@ function createWindow() {
     // mainWindow.webContents.openDevTools()
   } else {
     // 生产模式：加载构建产物
-    mainWindow.loadFile(join(import.meta.dirname, '../dist/index.html'))
+    mainWindow.loadFile(join(vueRootDir, 'index.html'))
   }
 
   // 外部链接交给系统浏览器打开
