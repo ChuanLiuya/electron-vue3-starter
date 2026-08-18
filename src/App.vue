@@ -1,8 +1,6 @@
 <script setup lang="ts">
-// 通过 window.electronAPI 访问 preload 暴露的接口
 console.log('electronAPI:', window.electronAPI)
-console.log('平台:', window.electronAPI.platform)
-console.log('版本:', window.electronAPI.versions)
+console.log('欢迎！')
 </script>
 
 <template>
