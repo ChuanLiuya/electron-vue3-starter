@@ -1,8 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  // 使用 Hash 模式：Electron 打包后通过 file:// 协议加载，
+  // History 模式无法正确解析路由，会导致页面白屏
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
