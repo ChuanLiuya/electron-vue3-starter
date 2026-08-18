@@ -1,0 +1,7 @@
+{
+  "productName": "YourAppName",
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": ["dist", "dist-electron"]
+}
