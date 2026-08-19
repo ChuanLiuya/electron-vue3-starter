@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'node:path'
 import { env } from './config/env'
 import { registerTestIpc } from './ipc'
-import { db } from './database'
+import { dataSource } from './database'
 
 const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
 
@@ -46,7 +46,9 @@ function createWindow() {
   })
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // 初始化数据库连接（TypeORM）
+  await dataSource.initialize()
   registerTestIpc()
   createWindow()
 
@@ -57,7 +59,7 @@ app.whenReady().then(() => {
 })
 
 app.on('will-quit', () => {
-  db.close()
+  if (dataSource.isInitialized) dataSource.destroy()
 })
 
 

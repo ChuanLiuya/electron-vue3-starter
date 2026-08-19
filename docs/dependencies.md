@@ -11,7 +11,36 @@
 
 ## 一、运行时依赖（dependencies）
 
-应用打包后仍需要这些包才能正常运行。
+> 打包后应用**运行时**仍需从 node_modules 加载的包。当前只剩主进程的数据层依赖（它们被 `notBundle()` 外部化，不会被打包进 JS 文件）。
+
+### better-sqlite3 `^12.11.1`
+
+- **是什么**：SQLite 数据库的 Node 绑定库（同步 API、性能极高的原生模块）。
+- **在项目里干什么**：作为 TypeORM 的 SQLite 驱动，真正负责读写本地 `notes.db` 数据库文件。它是 **C++ 原生模块**，需要按 Electron 的 ABI 编译。
+- **缺了会怎么样**：TypeORM 无法连接数据库，`dataSource.initialize()` 报错，整个数据层瘫痪。
+- **注意**：版本被 TypeORM 约束在 `^12`（见常见问题）。每次 `npm install` 后需执行 `npx electron-builder install-app-deps` 按 Electron ABI 重编，否则运行时报 `NODE_MODULE_VERSION` 不匹配。
+
+### typeorm `^1.1.0`
+
+- **是什么**：TypeScript 的 ORM 框架，把类（实体）映射到数据库表。
+- **在项目里干什么**：`electron/database/` 下用 `@Entity` / `@Column` 装饰器定义实体，`dataSource` 统一管理连接，`getRepository()` 提供类型安全的增删改查，`synchronize` 自动同步表结构。
+- **缺了会怎么样**：`electron/database`、`electron/ipc` 无法编译，数据访问层全部失效。
+
+### reflect-metadata `^0.2.2`
+
+- **是什么**：ECMAScript「反射元数据」提案的运行时实现（polyfill）。
+- **在项目里干什么**：为 TypeORM 的装饰器（`@Entity`、`@Column`）提供运行时「存/查元数据」的能力，是装饰器能正常工作的前提。
+- **缺了会怎么样**：TypeORM 装饰器元数据丢失，运行时直接报错，应用无法启动。
+
+---
+
+## 二、开发依赖（devDependencies）
+
+只在开发、构建、打包时使用，不会打包进最终产物。
+
+### 0. 前端框架（会被 Vite 打包进产物，故放开发依赖）
+
+> 渲染进程的依赖由 Vite 打包进 `dist/` 的 JS 文件，打包后的应用运行时不再需要从 node_modules 加载它们，因此可放 devDependencies，能减小安装包体积。
 
 ### vue `^3.5.40`
 
@@ -30,12 +59,6 @@
 - **是什么**：Vue 官方推荐的状态管理库（Vuex 的继任者）。
 - **在项目里干什么**：管理 `src/stores/counter.ts` 等全局共享状态，跨组件共享数据。
 - **缺了会怎么样**：`stores/` 目录下的代码无法编译，使用 `useCounterStore()` 的组件报错。若暂不用全局状态，可移除相关代码后正常运行。
-
----
-
-## 二、开发依赖（devDependencies）
-
-只在开发、构建、打包时使用，不会打包进最终产物。
 
 ### 1. Electron 相关
 
@@ -100,6 +123,12 @@
 - **是什么**：Node.js 的 TypeScript 类型定义。
 - **在项目里干什么**：让 TS 认识 `process`、`path`、`fs` 等 Node 全局与模块（Electron 主进程、Vite 配置都需要）。
 - **缺了会怎么样**：使用 Node API 的代码会报"找不到模块/类型"错误，类型检查失败。纯类型包，不影响运行时。
+
+### @types/better-sqlite3 `^9.6.0`
+
+- **是什么**：better-sqlite3 的 TypeScript 类型定义（DefinitelyTyped）。
+- **在项目里干什么**：提供 better-sqlite3 的类型声明。项目通过 TypeORM 使用数据库（TypeORM 的 better-sqlite3 驱动内部依赖此包），此类型包保证相关类型提示完整。
+- **缺了会怎么样**：直接 `import Database from 'better-sqlite3'` 会报"找不到声明文件"。纯类型包，不影响运行时。
 
 ### @tsconfig/node24 `^24.0.4`
 
@@ -183,7 +212,7 @@
 
 ### Q：这些依赖都是必要的吗？
 
-不是。真正"少了就完全跑不起来"的是：`vue`、`vue-router`、`pinia`、`vite`、`@vitejs/plugin-vue`、`electron`、`vite-plugin-electron`。其余大多是"缺了只影响对应功能"（lint、类型检查、打包等）。
+不是。真正"少了就完全跑不起来"的是：`vue`、`vue-router`、`pinia`、`vite`、`@vitejs/plugin-vue`、`electron`、`vite-plugin-electron`，以及数据层的 `better-sqlite3`、`typeorm`、`reflect-metadata`。其余大多是"缺了只影响对应功能"（lint、类型检查、打包等）。
 
 ### Q：electron 相关的是装 devDependencies 还是 dependencies？
 
@@ -192,3 +221,11 @@
 ### Q：为什么 oxlint 和 eslint-plugin-oxlint 版本要一致？
 
 `eslint-plugin-oxlint` 把 oxlint 声明为 peer 依赖，二者版本区间不匹配时 `npm install` 会直接报 `ERESOLVE` 冲突。本项目统一为 `~1.78.0`。
+
+### Q：为什么 better-sqlite3 用的是 12.x 而不是 13.x？
+
+TypeORM 把 `better-sqlite3@^12` 声明为 peer 依赖。装 13.x 会与 TypeORM 冲突（`npm install` 报 `ERESOLVE`）。因此本项目固定在 `^12.11.1`。另外 better-sqlite3 是原生模块，每次 `npm install` 后要执行 `npx electron-builder install-app-deps` 按 Electron 的 ABI 重新编译，否则运行时报 `NODE_MODULE_VERSION` 不匹配。
+
+### Q：为什么 vue、vue-router、pinia 放在 devDependencies？
+
+它们是渲染进程（前端）的依赖，Vite 构建时会把它们打包进 `dist/` 的 JS 文件，打包后的应用运行时不再需要从 node_modules 加载。而 `electron-builder` 只把 `dependencies` 里的包装进安装包，因此放 devDependencies 能减小安装包体积。主进程的数据层依赖（typeorm、better-sqlite3、reflect-metadata）被 `notBundle()` 外部化，打包后运行时仍需真身在场，所以必须留在 `dependencies`。
