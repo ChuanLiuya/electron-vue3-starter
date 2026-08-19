@@ -1,6 +1,7 @@
 // 集中管理 Electron 主进程的环境变量与目录配置
 
-import { join } from "node:path"
+import { app } from 'electron'
+import { join } from 'node:path'
 
 /** 是否为开发模式（vite-plugin-electron 在 dev 时注入 VITE_DEV_SERVER_URL） */
 const isDev = !!process.env.VITE_DEV_SERVER_URL
@@ -19,6 +20,12 @@ const vueRootDir = join(rootDir, 'dist')
 
 /** 公用 */
 const publicDir = join(rootDir, 'public')
+
+/** 用户数据目录（存放数据库等用户数据，开发/打包自动指向正确位置） */
+const userDataDir = app.getPath('userData')
+
+/** SQLite 数据库文件完整路径 */
+const dbPath = join(userDataDir, 'notes.db')
 
 /** 集中导出的环境变量与目录配置 */
 export const env = {
@@ -39,4 +46,10 @@ export const env = {
 
   /** 渲染进程加载入口（开发：dev server；生产：打包后的 index.html） */
   publicDir,
+
+  /** 用户数据目录 */
+  userDataDir,
+
+  /** SQLite 数据库文件完整路径 */
+  dbPath,
 }

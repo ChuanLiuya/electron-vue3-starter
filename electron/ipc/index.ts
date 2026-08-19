@@ -1,5 +1,6 @@
+// 笔记相关的 IPC 处理器（主进程）
 import { ipcMain } from 'electron'
-import { db } from './db'
+import { db } from '../database'
 
 export function registerTestIpc() {
   ipcMain.handle('test:list', () =>

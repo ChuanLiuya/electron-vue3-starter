@@ -1,8 +1,8 @@
 import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'node:path'
-import { env } from './env'
+import { env } from './config/env'
 import { registerTestIpc } from './ipc'
-import { db } from './db'
+import { db } from './database'
 
 const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
 
