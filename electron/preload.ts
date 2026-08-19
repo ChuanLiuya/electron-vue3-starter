@@ -1,7 +1,5 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
-// 通过 contextBridge 安全地向渲染进程暴露受控 API
-// （不要直接暴露整个 Node 环境，避免安全风险）
 const api = {
   platform: process.platform,
   versions: {
@@ -9,6 +7,10 @@ const api = {
     chrome: process.versions.chrome,
     node: process.versions.node,
   },
+  test: {
+    list: () => ipcRenderer.invoke('test:list'),
+    add: (title: string, content: string) => ipcRenderer.invoke('test:add', title, content),
+  }
 }
 
 contextBridge.exposeInMainWorld('electronAPI', api)

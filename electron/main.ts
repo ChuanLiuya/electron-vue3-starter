@@ -1,6 +1,8 @@
 import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'node:path'
 import { env } from './env'
+import { registerTestIpc } from './ipc'
+import { db } from './db'
 
 const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
 
@@ -45,6 +47,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  registerTestIpc()
   createWindow()
 
   // macOS：点击 Dock 图标时若无窗口则重新创建
@@ -52,6 +55,13 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
+
+app.on('will-quit', () => {
+  db.close()
+})
+
+
+
 
 // Windows / Linux：所有窗口关闭即退出应用
 app.on('window-all-closed', () => {
