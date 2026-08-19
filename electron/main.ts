@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'node:path'
 import { env } from './config/env'
 import { registerTestIpc } from './ipc'
-import { dataSource } from './database'
+import { dataSource, initializeDatabase } from './database'
 
 const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
 
@@ -48,7 +48,7 @@ function createWindow() {
 
 app.whenReady().then(async () => {
   // 初始化数据库连接（TypeORM）
-  await dataSource.initialize()
+  await initializeDatabase()
   registerTestIpc()
   createWindow()
 

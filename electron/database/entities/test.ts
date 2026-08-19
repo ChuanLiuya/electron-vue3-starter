@@ -3,12 +3,15 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity('test')
 export class TestEntity {
-    @PrimaryGeneratedColumn()
-    id!: number
+  /**
+   * id
+   */
+  @PrimaryGeneratedColumn()
+  id!: number
 
-    @Column({ default: '' })
-    title!: string
+  @Column({ default: '' })
+  title!: string
 
-    @Column({ type: 'text', default: '' })
-    content!: string
+  @Column({ type: 'text', default: '' })
+  content!: string
 }

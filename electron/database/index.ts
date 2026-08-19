@@ -10,3 +10,8 @@ export const dataSource = new DataSource({
   entities: [TestEntity],
   synchronize: true, // 开发阶段：实体结构变化时自动同步表结构
 })
+
+/** 初始化数据库连接（由主进程在应用就绪后调用） */
+export async function initializeDatabase() {
+  await dataSource.initialize()
+}
