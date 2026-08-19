@@ -1,3 +1,8 @@
+<script setup lang="ts">
+console.log('electronAPI:', window.electronAPI)
+console.log('欢迎！')
+</script>
+
 <template>
   <RouterView />
 </template>
