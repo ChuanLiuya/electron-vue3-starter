@@ -10,23 +10,23 @@ declare global {
   }
 
   interface Window {
+    /** 业务功能 API（走 IPC 调用主进程） */
     electronAPI: {
-      platform: string
-      versions: {
-        electron: string
-        chrome: string
-        node: string
-      }
-      test: {
-        list: () => Promise<NoteRow[]>
-        add: (title: string, content: string) => Promise<unknown>
-      }
       cat: {
         list: () => Promise<unknown>
         get: (id: number) => Promise<unknown>
         create: (data: unknown) => Promise<unknown>
         update: (id: number, data: unknown) => Promise<unknown>
         remove: (id: number) => Promise<unknown>
+      }
+    }
+    /** 系统环境信息（preload 直接读取，不经过 IPC） */
+    systemInfo: {
+      platform: string
+      versions: {
+        electron: string
+        chrome: string
+        node: string
       }
     }
   }
