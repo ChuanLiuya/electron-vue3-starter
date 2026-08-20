@@ -1,12 +1,12 @@
-import { app, shell, BrowserWindow } from 'electron'
+// 主窗口的创建与管理
+import { BrowserWindow, shell } from 'electron'
 import { join } from 'node:path'
-import { env } from './config/env'
-import { registerIpc } from './ipc'
-import { dataSource, initializeDatabase } from './database'
+import { env } from '../config/env'
 
 const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
 
-function createWindow() {
+/** 创建并显示主窗口 */
+export function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
@@ -45,27 +45,3 @@ function createWindow() {
     return { action: 'deny' }
   })
 }
-
-app.whenReady().then(async () => {
-  // 初始化数据库连接（TypeORM）
-  await initializeDatabase()
-  registerIpc()
-  createWindow()
-
-  // macOS：点击 Dock 图标时若无窗口则重新创建
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
-
-app.on('will-quit', () => {
-  if (dataSource.isInitialized) dataSource.destroy()
-})
-
-
-
-
-// Windows / Linux：所有窗口关闭即退出应用
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
-})

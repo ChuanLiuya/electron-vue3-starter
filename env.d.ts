@@ -21,6 +21,13 @@ declare global {
         list: () => Promise<NoteRow[]>
         add: (title: string, content: string) => Promise<unknown>
       }
+      cat: {
+        list: () => Promise<unknown>
+        get: (id: number) => Promise<unknown>
+        create: (data: unknown) => Promise<unknown>
+        update: (id: number, data: unknown) => Promise<unknown>
+        remove: (id: number) => Promise<unknown>
+      }
     }
   }
 }

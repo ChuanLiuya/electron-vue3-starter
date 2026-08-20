@@ -2,12 +2,11 @@
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import { env } from '../config/env'
-import { TestEntity } from './entities/test'
 import { CatEntity } from './entities/cat'
 export const dataSource = new DataSource({
   type: 'better-sqlite3',
   database: env.dbPath,
-  entities: [TestEntity, CatEntity],
+  entities: [CatEntity],
   synchronize: true,
 })
 
