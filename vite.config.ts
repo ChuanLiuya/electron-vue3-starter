@@ -5,12 +5,35 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import electron from 'vite-plugin-electron/simple'
 import { esmShim, notBundle } from 'vite-plugin-electron/plugin'
+// Naive UI 按需自动引入
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
+    // 自动导入 Vue / Vue Router API（ref、computed、useRouter 等），无需手动 import
+    // 生成的类型声明写入 src/auto-imports.d.ts（在 tsconfig.app.json include 范围内）
+    AutoImport({
+      imports: [
+        'vue',
+        'vue-router',
+        // Naive UI 的 API 函数（useMessage 等）无法用 NaiveUiResolver 自动导入（其只匹配组件），需在此显式声明
+        {
+          'naive-ui': ['useMessage', 'useDialog', 'useNotification', 'useLoadingBar'],
+        },
+      ],
+      dts: 'src/auto-imports.d.ts',
+    }),
+    // 按需自动引入 Naive UI 组件（模板中直接使用 NButton 等，无需手动 import）
+    // 生成的类型声明写入 src/components.d.ts（在 tsconfig.app.json include 范围内）
+    Components({
+      resolvers: [NaiveUiResolver()],
+      dts: 'src/components.d.ts',
+    }),
     electron({
       main: {
         // 主进程入口（electron/main/index.ts），构建产物输出到 dist-electron/
