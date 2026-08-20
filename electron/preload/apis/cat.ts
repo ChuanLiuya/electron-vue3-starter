@@ -1,17 +1,23 @@
-// 猫（Cat）模块的渲染进程 API（对应主进程 CatController 注册的 IPC 通道）
+
 import { ipcRenderer } from 'electron'
 import { IpcChannels } from '../../ipc/channels'
+import type { CatDTO, CatCreateInput, CatUpdateInput } from '@shared/types/cat'
 
-/** 通过 ipcRenderer 调用主进程 cat:* 通道 */
 export const catApi = {
-  /** 查（全部）：api:cat:list */
-  list: () => ipcRenderer.invoke(IpcChannels.cat.list),
-  /** 查（单条）：api:cat:get */
-  get: (id: number) => ipcRenderer.invoke(IpcChannels.cat.get, id),
+  /** 查（全部）：api:cat:findAll */
+  findAll: (): Promise<CatDTO[]> => ipcRenderer.invoke(IpcChannels.cat.findAll),
+  /** 查（单条）：api:cat:findOneById */
+  get: (id: number): Promise<CatDTO | null> =>
+    ipcRenderer.invoke(IpcChannels.cat.findOneById, id),
   /** 增：api:cat:create */
-  create: (data: unknown) => ipcRenderer.invoke(IpcChannels.cat.create, data),
+  create: (data: CatCreateInput): Promise<number> =>
+    ipcRenderer.invoke(IpcChannels.cat.create, data),
   /** 改：api:cat:update */
-  update: (id: number, data: unknown) => ipcRenderer.invoke(IpcChannels.cat.update, id, data),
+  update: (id: number, data: CatUpdateInput): Promise<CatDTO | null> =>
+    ipcRenderer.invoke(IpcChannels.cat.update, id, data),
   /** 删：api:cat:remove */
-  remove: (id: number) => ipcRenderer.invoke(IpcChannels.cat.remove, id),
+  remove: (id: number): Promise<boolean> => ipcRenderer.invoke(IpcChannels.cat.remove, id),
 }
+
+/** catApi 的方法签名类型，可复用于 window 声明 */
+export type CatApi = typeof catApi

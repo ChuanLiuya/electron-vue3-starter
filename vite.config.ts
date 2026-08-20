@@ -50,6 +50,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       // 主进程路径别名：@electron 指向 electron/ 目录
       '@electron': fileURLToPath(new URL('./electron', import.meta.url)),
+      // 前后端共享类型：@shared 指向 shared/ 目录
+      '@shared': fileURLToPath(new URL('./shared', import.meta.url)),
     },
   },
 })

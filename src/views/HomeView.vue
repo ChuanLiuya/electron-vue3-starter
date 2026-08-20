@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import CounterButton from '../components/CounterButton.vue'
+import type { CatDTO } from '@shared/types/cat'
 
-const notes = ref<NoteRow[]>([])
+const cats = ref<CatDTO[]>([])
 
 async function load() {
-  notes.value = await window.electronAPI.test.list()
+  cats.value = await window.electronAPI.cat.findAll()
 }
 
 async function add() {
-  await window.electronAPI.test.add('测试笔记', '你好，SQLite！')
+  await window.electronAPI.cat.create({ name: '测试猫', age: 2, breeds: '中华田园猫' })
   await load()
 }
 
@@ -21,9 +22,9 @@ onMounted(load)
     <CounterButton />
     <section style="margin-top: 2rem">
       <h2>SQLite 测试</h2>
-      <button @click="add">存一条</button>
+      <button @click="add">存一只猫</button>
       <button @click="load">读出来</button>
-      <pre>{{ JSON.stringify(notes, null, 2) }}</pre>
+      <pre>{{ JSON.stringify(cats, null, 2) }}</pre>
     </section>
   </main>
 </template>

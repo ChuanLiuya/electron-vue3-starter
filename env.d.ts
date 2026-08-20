@@ -1,24 +1,15 @@
 /// <reference types="vite/client" />
 
 // preload 通过 contextBridge 暴露到 window 上的 API 类型声明
-declare global {
-  /** 笔记表的一行记录 */
-  interface NoteRow {
-    id: number
-    title: string
-    content: string
-  }
+// 数据契约来自 shared/types（shared/types/cat.ts），入口形状（electronAPI.cat）从 preload 的 catApi 推导（typeof）
+// 这样改 preload 方法签名时 window 类型自动同步，无需再手写方法列表
+import type { CatApi } from './electron/preload/apis/cat'
 
+declare global {
   interface Window {
     /** 业务功能 API（走 IPC 调用主进程） */
     electronAPI: {
-      cat: {
-        list: () => Promise<unknown>
-        get: (id: number) => Promise<unknown>
-        create: (data: unknown) => Promise<unknown>
-        update: (id: number, data: unknown) => Promise<unknown>
-        remove: (id: number) => Promise<unknown>
-      }
+      cat: CatApi
     }
     /** 系统环境信息（preload 直接读取，不经过 IPC） */
     systemInfo: {
