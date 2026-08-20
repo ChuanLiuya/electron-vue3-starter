@@ -24,5 +24,5 @@ export class CatEntity implements CatDTO {
    * 品种
    */
   @Column()
-  breeds!: string
+  breed!: string
 }
