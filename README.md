@@ -42,6 +42,10 @@ Electron 相关集成（主进程、preload、打包）正在规划中，详见�
 
 - **Node.js**：`^22.18.0` 或 `>=24.12.0`（见 `package.json` 中 `engines` 字段）
 - **包管理器**：npm（建议使用 v10+）
+- **C++ 编译器（仅打包需要，Windows）**：项目使用原生模块 `better-sqlite3`，`npm run build` 打包时会按 Electron 的 ABI 重新编译它。Windows 上需安装 **Visual Studio Build Tools 2022**，并在安装时勾选「使用 C++ 的桌面开发」工作负载（含 MSVC 编译器与 Windows SDK）。
+  - 下载：[Visual Studio Build Tools 2022](https://visualstudio.microsoft.com/zh-hans/downloads/#build-tools-for-visual-studio-2022)
+  - 说明：只有 `npm run build` 打包时需要；开发模式（`npm run dev`）不受影响，暂不打包可先不装
+  - 装完验证：在终端运行 `npx node-gyp --version`，能输出版本号即表示编译器可用
 
 ## 快速开始
 
