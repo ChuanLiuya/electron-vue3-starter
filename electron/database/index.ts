@@ -3,12 +3,12 @@ import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import { env } from '../config/env'
 import { TestEntity } from './entities/test'
-
+import { CatEntity } from './entities/cat'
 export const dataSource = new DataSource({
   type: 'better-sqlite3',
   database: env.dbPath,
-  entities: [TestEntity],
-  synchronize: true, // 开发阶段：实体结构变化时自动同步表结构
+  entities: [TestEntity, CatEntity],
+  synchronize: true,
 })
 
 /** 初始化数据库连接（由主进程在应用就绪后调用） */

@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'node:path'
 import { env } from './config/env'
-import { registerTestIpc } from './ipc'
+import { registerIpc } from './ipc'
 import { dataSource, initializeDatabase } from './database'
 
 const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
@@ -49,7 +49,7 @@ function createWindow() {
 app.whenReady().then(async () => {
   // 初始化数据库连接（TypeORM）
   await initializeDatabase()
-  registerTestIpc()
+  registerIpc()
   createWindow()
 
   // macOS：点击 Dock 图标时若无窗口则重新创建

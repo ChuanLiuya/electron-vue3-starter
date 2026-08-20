@@ -1,9 +1,11 @@
-// 笔记相关的 IPC 处理器（主进程）
+// IPC 处理器汇总注册（所有模块的入口）
 import { ipcMain } from 'electron'
-import { dataSource } from '../database'
-import { TestEntity } from '../database/entities/test'
+import { dataSource } from '@electron/database'
+import { TestEntity } from '@electron/database/entities/test'
+import { CatController } from './apis/cat'
 
-export function registerTestIpc() {
+export function registerIpc() {
+  // 示例 / 测试模块（test 表）
   ipcMain.handle('test:list', async () => {
     const repo = dataSource.getRepository(TestEntity)
     return repo.find({ order: { id: 'DESC' } })
@@ -14,4 +16,7 @@ export function registerTestIpc() {
     const saved = await repo.save(repo.create({ title, content }))
     return saved.id
   })
+
+  // 猫模块（class 风格）
+  new CatController().register()
 }

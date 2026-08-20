@@ -32,6 +32,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // 主进程路径别名：@electron 指向 electron/ 目录
+      '@electron': fileURLToPath(new URL('./electron', import.meta.url)),
     },
   },
 })
