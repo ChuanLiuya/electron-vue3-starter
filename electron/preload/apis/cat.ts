@@ -12,7 +12,7 @@
  *   用它声明 `window.electronAPI.cat`——改这里的方法签名，前端类型自动同步
  */
 import { ipcRenderer } from 'electron'
-import { IpcChannels } from '../../ipc/channels'
+import { IpcChannels } from '@electron/ipc/channels'
 import type { CatDTO, CatCreateInput, CatUpdateInput } from '@shared/types/cat'
 
 export const catApi = {

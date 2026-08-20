@@ -1,5 +1,5 @@
 // IPC 处理器汇总注册
-import { CatController } from './apis/cat'
+import { CatController } from '@electron/ipc/apis/cat'
 
 export function registerIpc() {
 

@@ -1,8 +1,8 @@
 // 主进程入口：应用生命周期 + 启动流程
 import { app, BrowserWindow } from 'electron'
-import { registerIpc } from '../ipc'
-import { dataSource, initializeDatabase } from '../database'
-import { createWindow } from './window'
+import { registerIpc } from '@electron/ipc'
+import { dataSource, initializeDatabase } from '@electron/database'
+import { createWindow } from '@electron/main/window'
 
 app.whenReady().then(async () => {
   // 初始化数据库连接（TypeORM）

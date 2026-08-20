@@ -1,7 +1,7 @@
 // 主窗口的创建与管理
 import { BrowserWindow, shell } from 'electron'
 import { join } from 'node:path'
-import { env } from '../config/env'
+import { env } from '@electron/config/env'
 
 const { isDev, devServerUrl, electronRootDir, vueRootDir, publicDir } = env
 

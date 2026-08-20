@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import { dataSource } from '@electron/database'
 import { CatEntity } from '@electron/database/entities/cat'
-import { IpcChannels } from '../channels'
+import { IpcChannels } from '@electron/ipc/channels'
 import type { CatDTO, CatCreateInput, CatUpdateInput } from '@shared/types/cat'
 
 /** 猫的相关api（类型契约来自 shared/types） */

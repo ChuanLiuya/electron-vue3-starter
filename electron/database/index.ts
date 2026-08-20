@@ -1,8 +1,8 @@
 // TypeORM 数据源配置（仅主进程使用）
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
-import { env } from '../config/env'
-import { CatEntity } from './entities/cat'
+import { env } from '@electron/config/env'
+import { CatEntity } from '@electron/database/entities/cat'
 export const dataSource = new DataSource({
   type: 'better-sqlite3',
   database: env.dbPath,
