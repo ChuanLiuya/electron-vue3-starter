@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "main": "dist-electron/main.js",
+  "description": "一个vue3+electron的起始项目",
+  "author": "chuan_liu_ya",
   "scripts": {
     "dev": "vite",
     "build": "vite build && electron-builder",
@@ -14,9 +16,14 @@
     "lint:eslint": "eslint . --fix --cache",
     "format": "prettier --write --experimental-cli src/"
   },
-  "dependencies": {},
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^1.1.0"
+  },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^24.13.3",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/eslint-config-typescript": "^14.9.0",
@@ -53,6 +60,9 @@
     "files": [
       "dist",
       "dist-electron"
+    ],
+    "asarUnpack": [
+      "**/*.node"
     ],
     "win": {
       "target": [
